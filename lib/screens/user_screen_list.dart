@@ -1,9 +1,11 @@
-// lib/screens/user_list_screen.dart
+ 
+
 import 'package:flutter/material.dart';
+import 'package:flutter_api_integration/screens/user_details.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_provider.dart';
-import '../models/user_model.dart';
+ 
 
 class UserListScreen extends StatelessWidget {
   @override
@@ -17,19 +19,39 @@ class UserListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('User List'),
+        title: Text('User List',style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blueGrey,
       ),
       body: userProvider.isLoading && userProvider.users.isEmpty
           ? Center(child: CircularProgressIndicator())
           : userProvider.errorMessage != null
               ? Center(child: Text(userProvider.errorMessage!))
-              : ListView.builder(
+              : ListView.separated(
                   itemCount: userProvider.users.length,
+                  separatorBuilder: (context, index) => Divider(height: 0, color: Colors.grey),
                   itemBuilder: (context, index) {
                     final user = userProvider.users[index];
-                    return ListTile(
-                      title: Text(user.name),
-                      subtitle: Text(user.email),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDetailsScreen(user: user),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        color: Color.fromARGB(31, 97, 95, 96),  
+                        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(user.name, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 8),
+                            Text(user.email, style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),
